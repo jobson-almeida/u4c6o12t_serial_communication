@@ -4,6 +4,8 @@
 #include "hardware/i2c.h"
 #include "hardware/clocks.h"
 #include "lib/ssd1306.h"
+#include "lib/color.h"
+#include "lib/matrix.h"
 #include "serial_communication.pio.h"
 #include "lib/font.h"
 
@@ -37,10 +39,13 @@ PIO pio;     // variável de entrada e saída programável
 uint sm;     // variável relacionada a máquina de estados
 uint offset; // variável que representa o offset da memória de instruções
 
-volatile uint32_t last_time = 0; // variável auxiliar para deboucing
-volatile bool display_on = false;
+volatile uint32_t last_time = 0;  // variável auxiliar para deboucing
+volatile bool ic2_color = true;   // variável que determina a cor do display, sendo true=preta e branca=false
+volatile bool display_on = false; // variável auxiliar que informa o status do display
+volatile int color_index = 0;     // index 0 corresponde a primeira cor do vetor de cores 'color'
 
-ssd1306_t ssd; // variável da estrutura do display
+double intensity = 0.1; // valor padrão da intensidade dos LEDs da matriz
+ssd1306_t ssd;          // variável da estrutura do display
 
 // interrupção da UART //////////////////////////////////////////////////////////
 void uart_rx_interruption()
@@ -54,19 +59,22 @@ void uart_rx_interruption()
             uart_putc(UART_ID, c);
             uart_puts(UART_ID, "\r\n");
 
-            // display
+            // atualiza o conteúdo do display com um caractere
+            ssd1306_fill(&ssd, false);
+            ssd1306_draw_char(&ssd, c, 60, 28); // desenha um caractere
+            ssd1306_send_data(&ssd);            // atualiza o display
 
             if (c >= '0' && c <= '9')
             {
                 // envia um número à matriz de LEDs
-                printf("%d\n", c);
+                show_number(pio, sm, color[color_index].r, color[color_index].g, color[color_index].b, intensity, (uint8_t)c - '0');
                 display_on = true;
             }
 
             if (!(c >= '0' && c <= '9') && display_on)
             {
                 // limpa a matriz de LEDs
-                printf("%d\n", c);
+                show_number(pio, sm, 0, 0, 0, 0.0, 10);
                 display_on = false;
             }
         }
@@ -112,14 +120,14 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
 void uart_setup()
 {
     // inicia a UART com uma taxa de transmissão básica.
-    uart_init(UART_ID, 2400);
+    uart_init(UART_ID, BAUD_RATE);
 
     // define os pinos TX e RX usando a função de seleção de GPIOs para UART
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
 
     // define a taxa de transmissão real selecionada, mais próxima da solicitada
-    int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
+    //int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
     // printf("%d\n", real_rate);
 
     // desliga o controle de fluxo UART CTS/RTS
@@ -192,16 +200,12 @@ void matrix_setup()
 int main()
 {
     stdio_init_all();
-
-    // Limpa o display. O display inicia com todos os pixels apagados.
-    // ssd1306_fill(&ssd, false);
-    // ssd1306_send_data(&ssd);
-
-    // bool cor = true;
-
+  
+    matrix_setup();
+    i2c_setup();
+    uart_setup();
     led_setup();
     button_setup();
-    uart_setup();
 
     // habilitar as interrupções para exibir os frames que representam os números de 0-9
     gpio_set_irq_enabled_with_callback(BUTTON_A, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
