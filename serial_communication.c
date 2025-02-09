@@ -227,6 +227,13 @@ int main()
     gpio_set_irq_enabled_with_callback(BUTTON_B, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
     gpio_set_irq_enabled_with_callback(BUTTON_C, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
 
+    // exibe mensagem inical no display
+    ssd1306_fill(&ssd, false);                      // limpa o display
+    ssd1306_draw_string(&ssd, "AGUARDANDO", 2, 8);  // Desenha uma string
+    ssd1306_draw_string(&ssd, "COMANDOS", 2, 18);   // Desenha uma string
+    ssd1306_draw_string(&ssd, "DO USUARIO", 2, 28); // Desenha uma string
+    ssd1306_send_data(&ssd);
+
     while (true)
     {
         // comunicação UART pelo terminal monitor
