@@ -41,7 +41,6 @@ volatile uint32_t last_time = 0; // variável auxiliar para deboucing
 
 ssd1306_t ssd; // variável da estrutura do display
 
-
 // interrupção da UART //////////////////////////////////////////////////////////
 void uart_rx_interruption()
 {
@@ -65,7 +64,6 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
 
             // notifica o status do LED verde
             notification = gpio_get(LED_GREEN) ? "LED VERDE ON" : "LED VERDE OFF";
-            printf("botão c\n");
         }
         if (gpio_get(BUTTON_B) == 0)
         {
@@ -175,6 +173,7 @@ int main()
 
     // bool cor = true;
 
+    led_setup();
     button_setup();
 
     // habilitar as interrupções para exibir os frames que representam os números de 0-9
