@@ -22,7 +22,7 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
 5. Extra
 - [] Modularizar os setups
     - [x] I2C
-    - [] UART
+    - [x] UART
     - [x] Botões
     - [x] LEDs
     - [x] Matriz RGB

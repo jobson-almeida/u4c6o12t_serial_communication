@@ -29,7 +29,39 @@ uint offset; // variável que representa o offset da memória de instruções
 
 ssd1306_t ssd; // variável da estrutura do display
 
-void setup_i2c()
+
+// setups ////////////////////////////////////////////////////////////////////////////
+void uart_setup()
+{
+  // inicia a UART com uma taxa de transmissão básica.
+  uart_init(UART_ID, 2400);
+
+  // define os pinos TX e RX usando a função de seleção de GPIOs para UART
+  gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
+  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
+
+  // define a taxa de transmissão real selecionada, mais próxima da solicitada
+  int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
+  // printf("%d\n", real_rate);
+
+  // desliga o controle de fluxo UART CTS/RTS
+  uart_set_hw_flow(UART_ID, false, false);
+
+  // define o formato dos dados
+  uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
+
+  // desliga FIFO's - first in, first out
+  uart_set_fifo_enabled(UART_ID, false);
+
+  // configura e habilita os manipuladores de interrupção
+  irq_set_exclusive_handler(UART0_IRQ, uart_rx_interruption);
+  irq_set_enabled(UART0_IRQ, true);
+
+  // habilita o UART para enviar interrupções - somente RX
+  uart_set_irq_enables(UART_ID, true, false);
+}
+
+void i2c_setup()
 {
     // initializa a I2C usando 400Khz.
     i2c_init(I2C_PORT, 400 * 1000);
@@ -76,6 +108,8 @@ void matrix_setup()
     sm = pio_claim_unused_sm(pio, true);
     serial_communication_program_init(pio, sm, offset, MATRIX_RGB);
 }
+
+///////////////////////////////////////////////////////////////////////
 
 int main()
 {
