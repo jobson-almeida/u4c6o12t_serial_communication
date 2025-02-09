@@ -20,7 +20,7 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
     - [] Um texto descritivo sobre a operação deve ser enviado ao Serial Monitor.
  
 5. Extra
-- [] Modularizar os setups
+- [x] Modularizar os setups
     - [x] I2C
     - [x] UART
     - [x] Botões

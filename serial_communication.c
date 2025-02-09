@@ -11,6 +11,15 @@
 #define I2C_SCL 15
 #define IC2_ADDRESS 0x3C
 
+// definição das macros da UART - seleção da UART, GPIOs e baud rate
+#define UART_ID uart0           // seleciona a UART0
+#define BAUD_RATE 115200        // define a taxa de transmissão
+#define UART_TX_PIN 0           // GPIO usada para TX
+#define UART_RX_PIN 1           // GPIO usada para RX
+#define DATA_BITS 8             // limite máximo de dados a serem transmitidos
+#define STOP_BITS 1             // sinaliza o fim de um caractere transmitido e fornece um período de tempo para o receptor se preparar para o próximo caractere
+#define PARITY UART_PARITY_NONE // método simples de detecção de erros durante a transmissão de dados
+
 // definção das macros dos botões - GPIOs
 #define BUTTON_A 5
 #define BUTTON_B 6
@@ -28,6 +37,13 @@ uint sm;     // variável relacionada a máquina de estados
 uint offset; // variável que representa o offset da memória de instruções
 
 ssd1306_t ssd; // variável da estrutura do display
+
+
+// interrupção da UART //////////////////////////////////////////////////////////
+void uart_rx_interruption()
+{
+    //
+}
 
 // handler de interrupção dos botões /////////////////////////////////////////
 void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
@@ -60,7 +76,7 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
         {
             printf("botão sem uso\n");
         }
-         printf("%s\n", notification);
+        printf("%s\n", notification);
     }
     gpio_acknowledge_irq(gpio, events); // limpa a interrupção
 }
