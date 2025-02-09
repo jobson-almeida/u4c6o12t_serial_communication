@@ -1,5 +1,6 @@
 #include "ssd1306.h"
 #include "font.h"
+#include <stdio.h>
 
 void ssd1306_init(ssd1306_t *ssd, uint8_t width, uint8_t height, bool external_vcc, uint8_t address, i2c_inst_t *i2c)
 {
@@ -82,7 +83,6 @@ void ssd1306_pixel(ssd1306_t *ssd, uint8_t x, uint8_t y, bool value)
   {
     ssd->ram_buffer[index] &= ~(1 << pixel);
   }
-  printf(ssd->ram_buffer);
 }
 
 void ssd1306_fill(ssd1306_t *ssd, bool value)
@@ -100,7 +100,7 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
 {
   uint16_t index = 0;
   char ver = c;
-  
+
   if (c >= 'A' && c <= 'Z')
   {
     index = (c - 'A' + 11) * 8; // delimita as letras maiúsculas
@@ -118,10 +118,10 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
   {
     for (uint8_t j = 0; j < 8; ++j)
     {
-      // printf("%08b", ((font[index + j]) >> (7 - i))  & 0x01); DEBUGGING
+      // printf("%08b", ((font[index + j]) >> (7 - i))  & 0x01); //DEBUGGING: Antes de verificar a impressão comente a mensagem inicial da função main
       ssd1306_pixel(ssd, x + i, y + j, ((font[index + j]) >> (7 - i)) & 0x01);
     }
-    // printf("\n"); DEBUGGING
+    // printf("\n"); //DEBUGGING: Antes de verificar a impressão comente a mensagem inicial da função main
   }
 }
 
