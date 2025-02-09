@@ -9,6 +9,11 @@
 #define I2C_SCL 15
 #define IC2_ADDRESS 0x3C
 
+// definção das macros dos botões - GPIOs
+#define BUTTON_A 5
+#define BUTTON_B 6
+#define BUTTON_C 22 //  botão de seleção do joystick, definido para alterar a cor dos LEDs da matriz
+
 ssd1306_t ssd; // variável da estrutura do display
 
 void setup_i2c()
@@ -23,6 +28,21 @@ void setup_i2c()
     ssd1306_init(&ssd, WIDTH, HEIGHT, false, IC2_ADDRESS, I2C_PORT); // Inicializa o display
     ssd1306_config(&ssd);                                            // configura o display
     ssd1306_send_data(&ssd);                                         // envia os dados para o display
+}
+
+void button_setup()
+{
+    gpio_init(BUTTON_A);
+    gpio_set_dir(BUTTON_A, GPIO_IN);
+    gpio_pull_up(BUTTON_A);
+
+    gpio_init(BUTTON_B);
+    gpio_set_dir(BUTTON_B, GPIO_IN);
+    gpio_pull_up(BUTTON_B);
+
+    gpio_init(BUTTON_C);
+    gpio_set_dir(BUTTON_C, GPIO_IN);
+    gpio_pull_up(BUTTON_C);
 }
 
 int main()
