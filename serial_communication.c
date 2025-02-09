@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
+#include <stdio.h>
 #include "hardware/i2c.h"
 #include "hardware/clocks.h"
 #include "lib/ssd1306.h"
