@@ -14,6 +14,10 @@
 #define BUTTON_B 6
 #define BUTTON_C 22 //  botão de seleção do joystick, definido para alterar a cor dos LEDs da matriz
 
+// definção das macros dos LEDs - GPIOs
+#define LED_GREEN 11
+#define LED_BLUE 12
+
 ssd1306_t ssd; // variável da estrutura do display
 
 void setup_i2c()
@@ -43,6 +47,17 @@ void button_setup()
     gpio_init(BUTTON_C);
     gpio_set_dir(BUTTON_C, GPIO_IN);
     gpio_pull_up(BUTTON_C);
+}
+
+void led_setup()
+{
+    gpio_init(LED_GREEN);
+    gpio_set_dir(LED_GREEN, GPIO_OUT);
+    gpio_put(LED_GREEN, false);
+
+    gpio_init(LED_BLUE);
+    gpio_set_dir(LED_BLUE, GPIO_OUT);
+    gpio_put(LED_BLUE, false);
 }
 
 int main()
