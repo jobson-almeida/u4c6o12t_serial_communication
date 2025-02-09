@@ -29,12 +29,40 @@ uint offset; // variável que representa o offset da memória de instruções
 
 ssd1306_t ssd; // variável da estrutura do display
 
-
-
-// hnadler de interrupção dos botões
+// handler de interrupção dos botões /////////////////////////////////////////
 void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
 {
-     //
+    uint32_t current_time = to_us_since_boot(get_absolute_time());
+    // verificar se passou tempo o bastante desde o último evento
+    if (current_time - last_time > 250000) // 250 ms de debouncing
+    {
+        last_time = current_time; // atualiza o tempo do último evento
+        char *notification;
+
+        if (gpio_get(BUTTON_A) == 0)
+        {
+            // altera o estado do LED verde (ligado/desligado).
+            gpio_put(LED_GREEN, !gpio_get(LED_GREEN));
+
+            // notifica o status do LED verde
+            notification = gpio_get(LED_GREEN) ? "LED VERDE ON" : "LED VERDE OFF";
+            printf("botão c\n");
+        }
+        if (gpio_get(BUTTON_B) == 0)
+        {
+            // altera o estado do LED azul (ligado/desligado).
+            gpio_put(LED_BLUE, !gpio_get(LED_BLUE));
+
+            // notifica o status do LED azul
+            notification = gpio_get(LED_BLUE) ? "LED BLUE ON" : "LED BLUE OFF";
+        }
+        if (gpio_get(BUTTON_C) == 0)
+        {
+            printf("botão sem uso\n");
+        }
+         printf("%s\n", notification);
+    }
+    gpio_acknowledge_irq(gpio, events); // limpa a interrupção
 }
 
 // setups ////////////////////////////////////////////////////////////////////////////
@@ -147,5 +175,4 @@ int main()
 
         sleep_ms(1000);
     }
- 
 }
