@@ -26,11 +26,12 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
     - [x] Botões
     - [x] LEDs
     - [x] Matriz RGB
-    - [x] Interrupção UART
-    - [x] Interrupção dos botões
-    - [x] Arquivos de fontes - representação na posição original 
-    - [x] Função de desenho do caracter, especificamente no reposicionamento dos bits para formação do caracter, conforme seu formato original 
- 
+- [x] Interrupção UART
+- [x] Interrupção dos botões
+- [x] Arquivos de fontes - representação na posição original 
+- [x] Função de desenho do caracter, especificamente no reposicionamento dos bits para formação do caracter, conforme seu formato original 
+- [x] Alterar a cor da Matriz RGB com o botão de seleção do joystick
+
 ## Requisitos do Projeto
 
 Para o desenvolvimento, devem ser seguidos os seguintes requisitos:<br>

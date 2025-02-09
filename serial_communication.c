@@ -43,17 +43,17 @@ volatile uint32_t last_time = 0;  // variável auxiliar para deboucing
 volatile bool ic2_color = true;   // variável que determina a cor do display, sendo true=preta e branca=false
 volatile bool display_on = false; // variável auxiliar que informa o status do display
 volatile int color_index = 0;     // index 0 corresponde a primeira cor do vetor de cores 'color'
+volatile char c;
 
 double intensity = 0.1; // valor padrão da intensidade dos LEDs da matriz
 ssd1306_t ssd;          // variável da estrutura do display
- 
+
 // interrupção da UART //////////////////////////////////////////////////////////
 void uart_rx_interruption()
-{ 
+{
     while (uart_is_readable(UART_ID))
     {
-
-        char c = uart_getc(UART_ID);
+        c = uart_getc(UART_ID);
         if (uart_is_writable(UART_ID))
         {
             uart_putc(UART_ID, c);
@@ -124,11 +124,18 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
 
         if (gpio_get(BUTTON_C) == 0)
         {
-            printf("botão sem uso\n");
+            if (color_index < 14)
+            {
+                color_index++;
+            }
+            else
+            {
+                color_index = 0;
+            }
+            show_number(pio, sm, color[color_index].r, color[color_index].g, color[color_index].b, intensity, (uint8_t)c - '0');
         }
-        printf("%s\n", led_notification);
+        gpio_acknowledge_irq(gpio, events); // limpa a interrupção
     }
-    gpio_acknowledge_irq(gpio, events); // limpa a interrupção
 }
 
 // setups ////////////////////////////////////////////////////////////////////////////
@@ -237,7 +244,6 @@ int main()
     while (true)
     {
         // comunicação UART pelo terminal monitor
-        char c;
         if (scanf("%c", &c) == 1)
         {
             printf("---- Received utf8 encoded message: \"%c\" ---- \n", c);
