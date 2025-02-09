@@ -229,15 +229,33 @@ int main()
 
     while (true)
     {
-        // cor = !cor;
-        // Atualiza o conteúdo do display com animações
-        // ssd1306_fill(&ssd, !cor);                           // Limpa o display
-        // ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor);       // Desenha um retângulo
-        // ssd1306_draw_string(&ssd, "CEPEDI   TIC37", 8, 10); // Desenha uma string
-        // ssd1306_draw_string(&ssd, "EMBARCATECH", 20, 30);   // Desenha uma string
-        // ssd1306_draw_string(&ssd, "PROF WILTON", 15, 48);   // Desenha uma string
-        // ssd1306_send_data(&ssd);                            // Atualiza o display
+        // comunicação UART pelo terminal monitor
+        char c;
+        if (scanf("%c", &c) == 1)
+        {
+            printf("---- Received utf8 encoded message: \"%c\" ---- \n", c);
 
-        sleep_ms(1000);
+            // atualiza o conteúdo do display com um caractere
+            ssd1306_fill(&ssd, !ic2_color);
+            ssd1306_draw_char(&ssd, c, 60, 28); // desenha um caractere
+            ssd1306_send_data(&ssd);            // atualiza o display
+
+            if (c >= '0' && c <= '9')
+            {
+                // envia um número à matriz de LEDs
+                show_number(pio, sm, color[color_index].r, color[color_index].g, color[color_index].b, intensity, (uint8_t)c - '0');
+                display_on = true;
+            }
+
+            if (!(c >= '0' && c <= '9') && display_on)
+            {
+                // limpa a matriz de LEDs
+                show_number(pio, sm, 0, 0, 0, 0.0, 10);
+                display_on = false;
+            }
+        }
+        sleep_ms(40);
     }
+
+    return 0; // boas práticas
 }
