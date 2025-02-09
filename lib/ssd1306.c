@@ -73,16 +73,20 @@ void ssd1306_send_data(ssd1306_t *ssd)
 void ssd1306_pixel(ssd1306_t *ssd, uint8_t x, uint8_t y, bool value)
 {
   uint16_t index = (y >> 3) + (x << 3) + 1;
-  uint8_t pixel = (y & 0b111);
+  uint8_t pixel = (y & 0x07);
   if (value)
+  {
     ssd->ram_buffer[index] |= (1 << pixel);
+  }
   else
+  {
     ssd->ram_buffer[index] &= ~(1 << pixel);
+  }
+  printf(ssd->ram_buffer);
 }
 
 void ssd1306_fill(ssd1306_t *ssd, bool value)
 {
-  // Itera por todas as posições do display
   for (uint8_t y = 0; y < ssd->height; ++y)
   {
     for (uint8_t x = 0; x < ssd->width; ++x)
@@ -96,20 +100,21 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
 {
   uint16_t index = 0;
   char ver = c;
+  
   if (c >= 'A' && c <= 'Z')
   {
-    index = (c - 'A' + 11) * 8; // Para letras maiúsculas
+    index = (c - 'A' + 11) * 8; // delimita as letras maiúsculas
   }
   else if (c >= 'a' && c <= 'z')
   {
-    index = (c - 'a' + 37) * 8; // Para letras maiúsculas
+    index = (c - 'a' + 37) * 8; // delimita letras maiúsculas
   }
   else if (c >= '0' && c <= '9')
   {
-    index = (c - '0' + 1) * 8; // Adiciona o deslocamento necessário
+    index = (c - '0' + 1) * 8; // adiciona o deslocamento necessário
   }
 
-  for (uint8_t i = 8; i > 0; --i)
+  for (uint8_t i = 8; i > 0; --i) // reposicionamento dos bits
   {
     for (uint8_t j = 0; j < 8; ++j)
     {
@@ -120,7 +125,6 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
   }
 }
 
-// Função para desenhar uma string
 void ssd1306_draw_string(ssd1306_t *ssd, const char *str, uint8_t x, uint8_t y)
 {
   while (*str)
