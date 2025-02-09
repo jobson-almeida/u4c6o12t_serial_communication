@@ -167,6 +167,7 @@ void matrix_setup()
 
 int main()
 {
+    stdio_init_all();
 
     // Limpa o display. O display inicia com todos os pixels apagados.
     // ssd1306_fill(&ssd, false);
