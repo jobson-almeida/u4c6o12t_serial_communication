@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
-#include "hardware/clocks.h" 
+#include "hardware/clocks.h"
 #include "lib/ssd1306.h"
 #include "serial_communication.pio.h"
 #include "lib/font.h"
@@ -66,7 +66,7 @@ void led_setup()
 
     gpio_init(LED_BLUE);
     gpio_set_dir(LED_BLUE, GPIO_OUT);
-    gpio_put(LED_BLUE, false); 
+    gpio_put(LED_BLUE, false);
 }
 
 void matrix_setup()

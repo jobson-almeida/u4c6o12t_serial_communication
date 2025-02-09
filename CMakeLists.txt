@@ -2,8 +2,8 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Initialise pico_sdk from installed location
@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(serial_communication serial_communication.c lib/ssd1306.c)
+add_executable(serial_communication serial_communication.c lib/ssd1306.c lib/matrix.c)
 
 pico_set_program_name(serial_communication "serial_communication")
 pico_set_program_version(serial_communication "0.1")
