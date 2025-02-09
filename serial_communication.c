@@ -46,10 +46,10 @@ volatile int color_index = 0;     // index 0 corresponde a primeira cor do vetor
 
 double intensity = 0.1; // valor padrão da intensidade dos LEDs da matriz
 ssd1306_t ssd;          // variável da estrutura do display
-
+ 
 // interrupção da UART //////////////////////////////////////////////////////////
 void uart_rx_interruption()
-{
+{ 
     while (uart_is_readable(UART_ID))
     {
 

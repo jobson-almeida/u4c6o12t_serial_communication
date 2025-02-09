@@ -26,6 +26,10 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
     - [x] Botões
     - [x] LEDs
     - [x] Matriz RGB
+    - [x] Interrupção UART
+    - [x] Interrupção dos botões
+    - [x] Arquivos de fontes - representação na posição original 
+    - [x] Função de desenho do caracter para identificar a reorganização dos bits
  
 ## Requisitos do Projeto
 

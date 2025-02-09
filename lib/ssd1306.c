@@ -80,13 +80,6 @@ void ssd1306_pixel(ssd1306_t *ssd, uint8_t x, uint8_t y, bool value)
     ssd->ram_buffer[index] &= ~(1 << pixel);
 }
 
-/*
-void ssd1306_fill(ssd1306_t *ssd, bool value) {
-  uint8_t byte = value ? 0xFF : 0x00;
-  for (uint8_t i = 1; i < ssd->bufsize; ++i)
-    ssd->ram_buffer[i] = byte;
-}*/
-
 void ssd1306_fill(ssd1306_t *ssd, bool value)
 {
   // Itera por todas as posições do display
@@ -99,77 +92,6 @@ void ssd1306_fill(ssd1306_t *ssd, bool value)
   }
 }
 
-void ssd1306_rect(ssd1306_t *ssd, uint8_t top, uint8_t left, uint8_t width, uint8_t height, bool value, bool fill)
-{
-  for (uint8_t x = left; x < left + width; ++x)
-  {
-    ssd1306_pixel(ssd, x, top, value);
-    ssd1306_pixel(ssd, x, top + height - 1, value);
-  }
-  for (uint8_t y = top; y < top + height; ++y)
-  {
-    ssd1306_pixel(ssd, left, y, value);
-    ssd1306_pixel(ssd, left + width - 1, y, value);
-  }
-
-  if (fill)
-  {
-    for (uint8_t x = left + 1; x < left + width - 1; ++x)
-    {
-      for (uint8_t y = top + 1; y < top + height - 1; ++y)
-      {
-        ssd1306_pixel(ssd, x, y, value);
-      }
-    }
-  }
-}
-
-void ssd1306_line(ssd1306_t *ssd, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, bool value)
-{
-  int dx = abs(x1 - x0);
-  int dy = abs(y1 - y0);
-
-  int sx = (x0 < x1) ? 1 : -1;
-  int sy = (y0 < y1) ? 1 : -1;
-
-  int err = dx - dy;
-
-  while (true)
-  {
-    ssd1306_pixel(ssd, x0, y0, value); // Desenha o pixel atual
-
-    if (x0 == x1 && y0 == y1)
-      break; // Termina quando alcança o ponto final
-
-    int e2 = err * 2;
-
-    if (e2 > -dy)
-    {
-      err -= dy;
-      x0 += sx;
-    }
-
-    if (e2 < dx)
-    {
-      err += dx;
-      y0 += sy;
-    }
-  }
-}
-
-void ssd1306_hline(ssd1306_t *ssd, uint8_t x0, uint8_t x1, uint8_t y, bool value)
-{
-  for (uint8_t x = x0; x <= x1; ++x)
-    ssd1306_pixel(ssd, x, y, value);
-}
-
-void ssd1306_vline(ssd1306_t *ssd, uint8_t x, uint8_t y0, uint8_t y1, bool value)
-{
-  for (uint8_t y = y0; y <= y1; ++y)
-    ssd1306_pixel(ssd, x, y, value);
-}
-
-// Função para desenhar um caractere
 void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
 {
   uint16_t index = 0;
@@ -187,13 +109,14 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
     index = (c - '0' + 1) * 8; // Adiciona o deslocamento necessário
   }
 
-  for (uint8_t i = 0; i < 8; ++i)
+  for (uint8_t i = 8; i > 0; --i)
   {
-    uint8_t line = font[index + i];
     for (uint8_t j = 0; j < 8; ++j)
     {
-      ssd1306_pixel(ssd, x + i, y + j, line & (1 << j));
+      // printf("%08b", ((font[index + j]) >> (7 - i))  & 0x01); DEBUGGING
+      ssd1306_pixel(ssd, x + i, y + j, ((font[index + j]) >> (7 - i)) & 0x01);
     }
+    // printf("\n"); DEBUGGING
   }
 }
 
