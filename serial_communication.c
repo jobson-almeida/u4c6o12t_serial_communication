@@ -38,13 +38,39 @@ uint sm;     // variável relacionada a máquina de estados
 uint offset; // variável que representa o offset da memória de instruções
 
 volatile uint32_t last_time = 0; // variável auxiliar para deboucing
+volatile bool display_on = false;
 
 ssd1306_t ssd; // variável da estrutura do display
 
 // interrupção da UART //////////////////////////////////////////////////////////
 void uart_rx_interruption()
 {
-    //
+    while (uart_is_readable(UART_ID))
+    {
+
+        char c = uart_getc(UART_ID);
+        if (uart_is_writable(UART_ID))
+        {
+            uart_putc(UART_ID, c);
+            uart_puts(UART_ID, "\r\n");
+
+            // display
+
+            if (c >= '0' && c <= '9')
+            {
+                // envia um número à matriz de LEDs
+                printf("%d\n", c);
+                display_on = true;
+            }
+
+            if (!(c >= '0' && c <= '9') && display_on)
+            {
+                // limpa a matriz de LEDs
+                printf("%d\n", c);
+                display_on = false;
+            }
+        }
+    }
 }
 
 // handler de interrupção dos botões /////////////////////////////////////////
@@ -175,6 +201,7 @@ int main()
 
     led_setup();
     button_setup();
+    uart_setup();
 
     // habilitar as interrupções para exibir os frames que representam os números de 0-9
     gpio_set_irq_enabled_with_callback(BUTTON_A, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
