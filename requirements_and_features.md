@@ -29,7 +29,7 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
     - [x] Interrupção UART
     - [x] Interrupção dos botões
     - [x] Arquivos de fontes - representação na posição original 
-    - [x] Função de desenho do caracter para identificar a reorganização dos bits
+    - [x] Função de desenho do caracter, especificamente no reposicionamento dos bits para formação do caracter, conforme seu formato original 
  
 ## Requisitos do Projeto
 
@@ -40,4 +40,4 @@ Para o desenvolvimento, devem ser seguidos os seguintes requisitos:<br>
 - [x] Controle de LEDs WS2812.<br>
 - [x] Utilização do Display 128 x 64.<br>
 - [x] Envio de informação pela UART.<br>
-- [] Organização do código.<br>
+- [x] Organização do código.<br>
