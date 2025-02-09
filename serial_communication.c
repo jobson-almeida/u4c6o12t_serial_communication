@@ -30,35 +30,42 @@ uint offset; // variável que representa o offset da memória de instruções
 ssd1306_t ssd; // variável da estrutura do display
 
 
+
+// hnadler de interrupção dos botões
+void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
+{
+     //
+}
+
 // setups ////////////////////////////////////////////////////////////////////////////
 void uart_setup()
 {
-  // inicia a UART com uma taxa de transmissão básica.
-  uart_init(UART_ID, 2400);
+    // inicia a UART com uma taxa de transmissão básica.
+    uart_init(UART_ID, 2400);
 
-  // define os pinos TX e RX usando a função de seleção de GPIOs para UART
-  gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
-  gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
+    // define os pinos TX e RX usando a função de seleção de GPIOs para UART
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
 
-  // define a taxa de transmissão real selecionada, mais próxima da solicitada
-  int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
-  // printf("%d\n", real_rate);
+    // define a taxa de transmissão real selecionada, mais próxima da solicitada
+    int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
+    // printf("%d\n", real_rate);
 
-  // desliga o controle de fluxo UART CTS/RTS
-  uart_set_hw_flow(UART_ID, false, false);
+    // desliga o controle de fluxo UART CTS/RTS
+    uart_set_hw_flow(UART_ID, false, false);
 
-  // define o formato dos dados
-  uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
+    // define o formato dos dados
+    uart_set_format(UART_ID, DATA_BITS, STOP_BITS, PARITY);
 
-  // desliga FIFO's - first in, first out
-  uart_set_fifo_enabled(UART_ID, false);
+    // desliga FIFO's - first in, first out
+    uart_set_fifo_enabled(UART_ID, false);
 
-  // configura e habilita os manipuladores de interrupção
-  irq_set_exclusive_handler(UART0_IRQ, uart_rx_interruption);
-  irq_set_enabled(UART0_IRQ, true);
+    // configura e habilita os manipuladores de interrupção
+    irq_set_exclusive_handler(UART0_IRQ, uart_rx_interruption);
+    irq_set_enabled(UART0_IRQ, true);
 
-  // habilita o UART para enviar interrupções - somente RX
-  uart_set_irq_enables(UART_ID, true, false);
+    // habilita o UART para enviar interrupções - somente RX
+    uart_set_irq_enables(UART_ID, true, false);
 }
 
 void i2c_setup()
@@ -119,6 +126,14 @@ int main()
     // ssd1306_send_data(&ssd);
 
     // bool cor = true;
+
+    button_setup();
+
+    // habilitar as interrupções para exibir os frames que representam os números de 0-9
+    gpio_set_irq_enabled_with_callback(BUTTON_A, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
+    gpio_set_irq_enabled_with_callback(BUTTON_B, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
+    gpio_set_irq_enabled_with_callback(BUTTON_C, GPIO_IRQ_EDGE_FALL, true, &button_interruption_gpio_irq_handler);
+
     while (true)
     {
         // cor = !cor;
@@ -132,4 +147,5 @@ int main()
 
         sleep_ms(1000);
     }
+ 
 }
