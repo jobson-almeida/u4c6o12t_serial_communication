@@ -84,12 +84,14 @@ void uart_rx_interruption()
 // handler de interrupção dos botões /////////////////////////////////////////
 void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
 {
+    char *led_notification;
+    bool pressed_button = false;
+
     uint32_t current_time = to_us_since_boot(get_absolute_time());
     // verificar se passou tempo o bastante desde o último evento
     if (current_time - last_time > 250000) // 250 ms de debouncing
     {
         last_time = current_time; // atualiza o tempo do último evento
-        char *notification;
 
         if (gpio_get(BUTTON_A) == 0)
         {
@@ -97,7 +99,8 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
             gpio_put(LED_GREEN, !gpio_get(LED_GREEN));
 
             // notifica o status do LED verde
-            notification = gpio_get(LED_GREEN) ? "LED VERDE ON" : "LED VERDE OFF";
+            led_notification = gpio_get(LED_GREEN) ? "LED VERDE ON" : "LED VERDE OFF";
+            pressed_button = true;
         }
         if (gpio_get(BUTTON_B) == 0)
         {
@@ -105,13 +108,25 @@ void button_interruption_gpio_irq_handler(uint gpio, uint32_t events)
             gpio_put(LED_BLUE, !gpio_get(LED_BLUE));
 
             // notifica o status do LED azul
-            notification = gpio_get(LED_BLUE) ? "LED BLUE ON" : "LED BLUE OFF";
+            led_notification = gpio_get(LED_BLUE) ? "LED BLUE ON" : "LED BLUE OFF";
+            pressed_button = true;
         }
+
+        // exibe mensagem sobre o status do LED no display e serial monitor
+        if (pressed_button)
+        {
+            ssd1306_fill(&ssd, !ic2_color);                     // limpa o display
+            ssd1306_draw_string(&ssd, led_notification, 8, 28); // nofifica o status do led azul no display
+            ssd1306_send_data(&ssd);
+            printf("%s\n", led_notification);
+            pressed_button = false;
+        }
+
         if (gpio_get(BUTTON_C) == 0)
         {
             printf("botão sem uso\n");
         }
-        printf("%s\n", notification);
+        printf("%s\n", led_notification);
     }
     gpio_acknowledge_irq(gpio, events); // limpa a interrupção
 }
@@ -127,7 +142,7 @@ void uart_setup()
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
 
     // define a taxa de transmissão real selecionada, mais próxima da solicitada
-    //int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
+    // int __unused real_rate = uart_set_baudrate(UART_ID, BAUD_RATE);
     // printf("%d\n", real_rate);
 
     // desliga o controle de fluxo UART CTS/RTS
@@ -200,7 +215,7 @@ void matrix_setup()
 int main()
 {
     stdio_init_all();
-  
+
     matrix_setup();
     i2c_setup();
     uart_setup();
