@@ -36,6 +36,8 @@ PIO pio;     // variável de entrada e saída programável
 uint sm;     // variável relacionada a máquina de estados
 uint offset; // variável que representa o offset da memória de instruções
 
+volatile uint32_t last_time = 0; // variável auxiliar para deboucing
+
 ssd1306_t ssd; // variável da estrutura do display
 
 

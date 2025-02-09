@@ -31,7 +31,7 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
 
 Para o desenvolvimento, devem ser seguidos os seguintes requisitos:<br>
 - [] Uso de interrupções.<br>
-- [] Debouncing.<br>
+- [x] Debouncing.<br>
 - [] Controle de LEDs comuns e LEDs WS2812.<br>
 - [] Utilização do Display 128 x 64.<br>
 - [] Envio de informação pela UART.<br>
