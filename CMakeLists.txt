@@ -40,6 +40,9 @@ add_executable(serial_communication serial_communication.c lib/ssd1306.c)
 pico_set_program_name(serial_communication "serial_communication")
 pico_set_program_version(serial_communication "0.1")
 
+# Generate PIO header
+pico_generate_pio_header(serial_communication ${CMAKE_CURRENT_LIST_DIR}/serial_communication.pio)
+
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(serial_communication 1)
 pico_enable_stdio_usb(serial_communication 1)
@@ -56,6 +59,7 @@ target_include_directories(serial_communication PRIVATE
 # Add any user requested libraries
 target_link_libraries(serial_communication 
         hardware_i2c
+        hardware_pio
         )
 
 pico_add_extra_outputs(serial_communication)

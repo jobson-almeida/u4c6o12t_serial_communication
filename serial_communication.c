@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
+#include "hardware/clocks.h" 
 #include "lib/ssd1306.h"
+#include "serial_communication.pio.h"
 #include "lib/font.h"
 
 #define I2C_PORT i2c1
@@ -17,6 +19,13 @@
 // definção das macros dos LEDs - GPIOs
 #define LED_GREEN 11
 #define LED_BLUE 12
+
+// definção da macro da matriz de LEDS - GPIO
+#define MATRIX_RGB 7
+
+PIO pio;     // variável de entrada e saída programável
+uint sm;     // variável relacionada a máquina de estados
+uint offset; // variável que representa o offset da memória de instruções
 
 ssd1306_t ssd; // variável da estrutura do display
 
@@ -57,7 +66,15 @@ void led_setup()
 
     gpio_init(LED_BLUE);
     gpio_set_dir(LED_BLUE, GPIO_OUT);
-    gpio_put(LED_BLUE, false);
+    gpio_put(LED_BLUE, false); 
+}
+
+void matrix_setup()
+{
+    pio = pio0;
+    offset = pio_add_program(pio, &serial_communication_program);
+    sm = pio_claim_unused_sm(pio, true);
+    serial_communication_program_init(pio, sm, offset, MATRIX_RGB);
 }
 
 int main()

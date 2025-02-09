@@ -24,8 +24,8 @@ Observação: Apenas um caractere será enviado de cada vez, não é necessário
     - [x] I2C
     - [] UART
     - [x] Botões
-    - [] LEDs
-    - [] Matriz RGB
+    - [x] LEDs
+    - [x] Matriz RGB
  
 ## Requisitos do Projeto
 
