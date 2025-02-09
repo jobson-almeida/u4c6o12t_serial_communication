@@ -1,7 +1,7 @@
 ## Funcionalidades do Projeto
 
 1. Modificação da Biblioteca font.h
-- [] Adicionar caracteres minúsculos à biblioteca font.h. Use sua criatividade para criar os novos caracteres.
+- [x] Adicionar caracteres minúsculos à biblioteca font.h. Use sua criatividade para criar os novos caracteres.
 
 2. Entrada de caracteres via PC
 - [] Utilize o Serial Monitor do VS Code para digitar os caracteres.
