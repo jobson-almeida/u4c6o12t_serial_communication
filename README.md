@@ -7,3 +7,5 @@ Para tal contou-se com o display **SSD1306**, contido na placa, e a manipulaçã
 Na interação com o display destaca-se a conexão realizada por meio da conexão USB - microcontrolador -, a simulação com o **Wokwi** em ambiente de desenvolvimento, o protocolo de comunicação UART, para envio dos caracteres e o I2C, para comunicação direta com o SSD1306.
 
 Por meio do serial monitor foi possível interagir com a **Matriz de LEDs RGB**, botões, e com o próprio display. No ambiente de simulação também foi possível demonstrar, por meio de interrupções, as trocas de caracteres no display, dos números na matriz e do envio de notificações decorrentes dos botões e LEDs.
+
+O resultado pode ser conferido no link [https://youtu.be/5dC4387jpxg](https://youtu.be/5dC4387jpxg)
